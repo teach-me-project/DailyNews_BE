@@ -15,6 +15,7 @@ const updatecover = (post_id) => {
 	db.query(
 		`select post_cover from post where post_id = ${post_id}`,
 		(err, result) => {
+			console.log(result, 'ini post covernya');
 			if (err) {
 				console.log('error di db query');
 				return 0;

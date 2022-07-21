@@ -12,5 +12,11 @@ router.post(
 	upload.single('post_cover'),
 	postController.addNewpost
 );
+router.patch(
+	'/',
+	verifyAuth.VerifyUpdatePost,
+	upload.single('post_cover'),
+	postController.updatepost
+);
 
 module.exports = router;

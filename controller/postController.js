@@ -12,6 +12,15 @@ module.exports = {
 			res.status(400).send(error);
 		}
 	},
+	updatepost: async (req, res) => {
+		//add New post From Body
+		try {
+			const result = await Post.UpdatePost(req, res);
+			res.status(200).send(result);
+		} catch (error) {
+			res.status(400).send(error);
+		}
+	},
 	// getAllpost: async (req, res) => {
 	// 	//get All post With Join
 	// 	try {
