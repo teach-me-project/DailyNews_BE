@@ -69,63 +69,71 @@ module.exports = {
 		});
 	},
 	getAllAcceptedPost: (req, res) => {
-		//add New Movies From Body
+		//get All Movies With Join
 		return new Promise((resolve, reject) => {
-			const {
-				profile_id,
-				post_cover,
-				post_title,
-				post_category,
-				post_fill,
-				post_link,
-			} = req.body;
-
-			if (req.file) {
-				if (FileValidation(req.file.filename) != 1) {
-					reject({
-						message:
-							'Format File Tidak Didukung ! , Format Yang Di Izinkan : Jpg,Png,Jpeg,Webp',
-						status: 400,
-					});
-				} else {
+			const { limit, page, order_by, sort } = req.query;
+			let offset = page * limit - limit;
+			db.query(
+				`SELECT * from post where post_status = 'accepted' ORDER BY ${order_by} ${sort} limit ${limit} OFFSET ${offset} `,
+				(error, result) => {
 					db.query(
-						`INSERT into post (profile_id,post_cover,post_title,post_category,post_fill,post_link) 
-				   Values ("${profile_id}","${req.file.filename}","${post_title}","${post_category}","${post_fill}","${post_link}")`,
-						(err, result) => {
-							const lastid = result.insertId;
-							if (err) {
-								console.log(err);
+						`SELECT * from post where post_status = 'accepted'`,
+						(error2, result2) => {
+							let totalpage = Math.ceil(result2.length / limit);
+							if (error || error2) {
+								console.log(error, 'ini error 1', error2, 'ini error 2');
 								reject({
-									message: 'Data Artikel Tidak Berhasil Di Inputt',
+									message: 'Failed To Get All Accepted Post',
 									status: 400,
 								});
 							} else {
-								db.query(
-									`insert into post_like (post_id) values("${lastid}")`,
-									(err2, result2) => {
-										if (err2) {
-											console.log(err2, 'ini errornya');
-										} else {
-											console.log(result2, 'ini resultnya');
-										}
-									}
-								);
-
 								resolve({
-									message:
-										'Artikel Berhasil Ditambahkan , Silahkan Menunggu Proses Persetujuan Admin',
+									message: 'Get All Accepted Post Success',
 									status: 200,
-									result,
+									totalpage: totalpage,
+									totalRow: result.length,
+									totaldata: result2.length,
+									list: result,
 								});
 							}
 						}
 					);
 				}
-			} else {
-				res.status(400).send({
-					message: 'Cover Artikel Tidak Boleh Kosong',
-				});
-			}
+			);
+		});
+	},
+	getAllWaitingPost: (req, res) => {
+		//get All Movies With Join
+		return new Promise((resolve, reject) => {
+			const { limit, page, order_by, sort } = req.query;
+			let offset = page * limit - limit;
+			db.query(
+				`SELECT * from post where post_status = 'waiting' ORDER BY ${order_by} ${sort} limit ${limit} OFFSET ${offset} `,
+				(error, result) => {
+					db.query(
+						`SELECT * from post where post_status = 'accepted'`,
+						(error2, result2) => {
+							let totalpage = Math.ceil(result2.length / limit);
+							if (error || error2) {
+								console.log(error, 'ini error 1', error2, 'ini error 2');
+								reject({
+									message: 'Failed To Get All Accepted Post',
+									status: 400,
+								});
+							} else {
+								resolve({
+									message: 'Get All Accepted Post Success',
+									status: 200,
+									totalpage: totalpage,
+									totalRow: result.length,
+									totaldata: result2.length,
+									list: result,
+								});
+							}
+						}
+					);
+				}
+			);
 		});
 	},
 	UpdatePost: (req, res) => {

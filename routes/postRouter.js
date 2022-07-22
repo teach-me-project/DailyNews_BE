@@ -6,6 +6,8 @@ const router = express.Router();
 const upload = require('../helper/multer');
 const verifyAuth = require('../helper/verifyAuth');
 
+router.get('/accepted', postController.getallacceptedpost);
+router.get('/waiting', postController.getallWaitingpost);
 router.post(
 	'/',
 	verifyAuth.VerifyToken,
