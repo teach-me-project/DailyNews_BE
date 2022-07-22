@@ -32,7 +32,7 @@ module.exports = {
 				   Values ("${profile_id}","${req.file.filename}","${post_title}","${post_category}","${post_fill}","${post_link}")`,
 						(err, result) => {
 							const lastid = result.insertId;
-							console.log(lastid, 'INI RESULTNYA');
+
 							if (err) {
 								console.log(err);
 								reject({
@@ -93,7 +93,6 @@ module.exports = {
 				   Values ("${profile_id}","${req.file.filename}","${post_title}","${post_category}","${post_fill}","${post_link}")`,
 						(err, result) => {
 							const lastid = result.insertId;
-							console.log(lastid, 'INI RESULTNYA');
 							if (err) {
 								console.log(err);
 								reject({
@@ -153,7 +152,6 @@ module.exports = {
 					   where post_id = '${post_id}'`,
 							(err, result) => {
 								if (err) {
-									console.log(err);
 									reject({
 										message: 'Data Artikel Tidak Berhasil Di Update',
 										status: 400,
@@ -172,6 +170,114 @@ module.exports = {
 			} else {
 				res.status(400).send({
 					message: 'Cover Artikel Tidak Boleh Kosong',
+				});
+			}
+		});
+	},
+	UpdatePostStatus: (req, res) => {
+		return new Promise((resolve, reject) => {
+			const { post_status } = req.query;
+			const { post_id } = req.query;
+			db.query(
+				`Select * from post where post_id = '${post_id}'`,
+				(err, result) => {
+					if (err) {
+						reject({
+							message: 'Terdapat Kesalahan pada Database',
+							status: 400,
+						});
+					} else if (!result.length) {
+						reject({
+							message: `Artikel Dengan ID ${post_id} Tidak Ditemukan`,
+							status: 400,
+						});
+					} else {
+						db.query(
+							`UPDATE post SET post_status='${post_status}' where post_id = '${post_id}'`,
+							(err, result) => {
+								if (err) {
+									reject({
+										message: 'Gagal Mengubah Status Artikel',
+										status: 400,
+									});
+								} else if (result && post_status.toLowerCase() == 'declined') {
+									resolve({
+										message: 'Artikel Telah DiTolak Untuk Di Publikasikan !! ',
+										status: 200,
+										result,
+									});
+								} else {
+									resolve({
+										message:
+											'Artikel Telah Di Setujui untuk di publikasikan !! ',
+										status: 200,
+										result,
+									});
+								}
+							}
+						);
+					}
+				}
+			);
+		});
+	},
+	UpdateAllPostStatus: (req, res) => {
+		return new Promise((resolve, reject) => {
+			const { post_status } = req.query;
+			if (
+				post_status.toLowerCase() == 'accepted' ||
+				post_status.toLowerCase() == 'declined'
+			) {
+				db.query(
+					`Select * from post where post_status = 'waiting'`,
+					(err, result) => {
+						if (err) {
+							reject({
+								message: 'Terdapat Kesalahan pada Database',
+								status: 400,
+							});
+						} else if (!result.length) {
+							reject({
+								message: `Tidak Ada Postingan yang menuunggu untuk diverifikasi !!`,
+								status: 400,
+							});
+						} else {
+							db.query(
+								`UPDATE post SET post_status='${post_status}' where post_status = 'waiting' `,
+								(err, result) => {
+									if (err) {
+										reject({
+											message: 'Gagal Mengubah Status waiting Artikel',
+											status: 400,
+										});
+									} else if (
+										result &&
+										post_status.toLowerCase() == 'declined'
+									) {
+										resolve({
+											message: `Status Semua Artikel waiting dirubah menjadi ${post_status} `,
+											status: 200,
+											result,
+										});
+									} else if (
+										result &&
+										post_status.toLowerCase() == 'accepted'
+									) {
+										resolve({
+											message: `Status Semua Artikel waiting dirubah menjadi ${post_status} `,
+											status: 200,
+											result,
+										});
+									}
+								}
+							);
+						}
+					}
+				);
+			} else {
+				reject({
+					message: `Pilihan Status Tidak Valid`,
+					status: 400,
 				});
 			}
 		});
