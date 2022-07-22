@@ -18,5 +18,15 @@ router.patch(
 	upload.single('post_cover'),
 	postController.updatepost
 );
+router.patch(
+	'/status',
+	verifyAuth.VerifyAdminRole,
+	postController.updatepoststatus
+);
+router.patch(
+	'/status/all',
+	verifyAuth.VerifyAdminRole,
+	postController.updateallpoststatus
+);
 
 module.exports = router;

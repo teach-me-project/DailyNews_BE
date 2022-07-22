@@ -1,7 +1,9 @@
+/** @format */
+
 const db = require('../helper/db_connections');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
 const { error, success } = require('../helper/message');
 
 module.exports = {
@@ -34,7 +36,10 @@ module.exports = {
 									console.log(result);
 									if (result) {
 										const token = jwt.sign(
-											{ user_id: results[0].account_id, role: results[0].account_role },
+											{
+												user_id: results[0].account_id,
+												role: results[0].account_role,
+											},
 											process.env.JWT_SECRET_KEY,
 											{
 												expiresIn: '1d',
@@ -126,89 +131,85 @@ module.exports = {
 	},
 
 	update: (req, res) => {
-		return new Promise((resolve, reject)=> {
-			const {email} = req.params
-			const password = req.body.password
+		return new Promise((resolve, reject) => {
+			const { email } = req.params;
+			const password = req.body.password;
 
-			console.log(req.params)
+			console.log(req.params);
 			const sqlcheckemail = `SELECT * from account where account_email = '${email.toLowerCase()}'`;
-			db.query(sqlcheckemail,(err, results)=> {
-			  if(err) {
-				res.send({message: "ada error"})
-			} 
+			db.query(sqlcheckemail, (err, results) => {
+				if (err) {
+					res.send({ message: 'ada error' });
+				}
 
-			bcrypt.hash(password,10, function(err,hashedPassword){
-				console.log(hashedPassword, 'ini hasil hashed')
-				console.log(results[0], 'ini data results')
-				  const previousData = {
-					...results[0],
-					...req.body, password :hashedPassword
-				  }
-				  
-				  const tokenEmail =  jwt.sign(
-					{ user_id: results[0].id, role: results[0].role },
-					process.env.JWT_SECRET_KEY,
-					{
-						expiresIn: '1d',
-					}
-				);
+				bcrypt.hash(password, 10, function (err, hashedPassword) {
+					console.log(hashedPassword, 'ini hasil hashed');
+					console.log(results[0], 'ini data results');
+					const previousData = {
+						...results[0],
+						...req.body,
+						password: hashedPassword,
+					};
 
+					const tokenEmail = jwt.sign(
+						{ user_id: results[0].id, role: results[0].role },
+						process.env.JWT_SECRET_KEY,
+						{
+							expiresIn: '1d',
+						}
+					);
 
-				const transporter = nodemailer.createTransport({
-					service : 'gmail',
-					auth:{
-						user: 'zakiteachme12@gmail.com',
-						pass: 'cxjdjyepshqahvjs'
-					},
-					tls:{
-						rejectUnauthorized:false
-					}
-				})
+					const transporter = nodemailer.createTransport({
+						service: 'gmail',
+						auth: {
+							user: 'zakiteachme12@gmail.com',
+							pass: 'cxjdjyepshqahvjs',
+						},
+						tls: {
+							rejectUnauthorized: false,
+						},
+					});
 
-				const mailOptions ={
-				from: '"Verify your email" <zakiteachme12@gmail.com>',
-				to: '12kevinsanjaya@gmail.com',
-				subject: 'dailynews -verify your email',
-				html: `<h2>${email}! Please Verify Mail for Update</h2>
+					const mailOptions = {
+						from: '"Verify your email" <zakiteachme12@gmail.com>',
+						to: '12kevinsanjaya@gmail.com',
+						subject: 'dailynews -verify your email',
+						html: `<h2>${email}! Please Verify Mail for Update</h2>
 						<h4>please verify your mail to continue...</h4>
 						
 
 						<a href="http://localhost:3289/api/v1/auth/verify-email?token=${tokenEmail}">Verify your email</a>
-						`    
-				}
+						`,
+					};
 
-				transporter.sendMail(mailOptions, function(err,info){
-					if(err){
-						console.log(err)
-					}else{
-						console.log('verification email is sent to your gmail account')
-					}
-				})
+					transporter.sendMail(mailOptions, function (err, info) {
+						if (err) {
+							console.log(err);
+						} else {
+							console.log('verification email is sent to your gmail account');
+						}
+					});
 
-				// console.log(tokenEmail, 'ini token')
-				// console.log('id', results[0].account_id)
-				// console.log('role', results[0].account_role)
+					// console.log(tokenEmail, 'ini token')
+					// console.log('id', results[0].account_id)
+					// console.log('role', results[0].account_role)
+				});
 
-			} )
-		
-
-			//   console.log(previousData.cover)       
-			//   const {title, id_categories, cover, release_date, director, description, casts} = previousData       
-			//   let date = moment(release_date).format('YYYY-MM-DD')
-			//   const sql = `UPDATE movies SET title='${title}',id_categories='${id_categories}', cover='${cover}',  release_date='${date}', director='${director}',description='${description}', casts='${casts}' WHERE id = ${id} `
-			//   db.query( sql,(err, results)=> {
-			// 	if(err) { 
-			// 	  reject(console.log(err))
-			// 	}
-			// 	resolve({
-			// 	  message: "update movies success",
-			// 	  status: 200,
-			// 	  data: results
-			// 	})
-			//   })
-			})
-		  })
+				//   console.log(previousData.cover)
+				//   const {title, id_categories, cover, release_date, director, description, casts} = previousData
+				//   let date = moment(release_date).format('YYYY-MM-DD')
+				//   const sql = `UPDATE movies SET title='${title}',id_categories='${id_categories}', cover='${cover}',  release_date='${date}', director='${director}',description='${description}', casts='${casts}' WHERE id = ${id} `
+				//   db.query( sql,(err, results)=> {
+				// 	if(err) {
+				// 	  reject(console.log(err))
+				// 	}
+				// 	resolve({
+				// 	  message: "update movies success",
+				// 	  status: 200,
+				// 	  data: results
+				// 	})
+				//   })
+			});
+		});
 	},
-
-
 };

@@ -27,7 +27,6 @@ const Auth = {
 			});
 		}
 	},
-
 	VerifyUser: (req, res, next) => {
 		if (req.headers.token) {
 			const token = req.headers.token;
@@ -97,6 +96,28 @@ const Auth = {
 		} else {
 			return res.status(404).send({
 				message: 'KAMU HARUS LOGIN DULU !!',
+			});
+		}
+	},
+	VerifyAdminRole: (req, res, next) => {
+		if (req.headers.token) {
+			const token = req.headers.token;
+			jwt.verify(token, process.env.JWT_SECRET_KEY, function (err, decoded) {
+				if (err) {
+					return res.status(404).send({
+						message: 'INVALID TOKEN',
+					});
+				} else if (decoded.role == process.env.ROLE_ADMIN) {
+					next();
+				} else {
+					return res.status(404).send({
+						message: 'HANYA ADMIN YANG BISA MENYETUJUI/MENOLAK ARTIKEL !!',
+					});
+				}
+			});
+		} else {
+			return res.status(404).send({
+				message: 'KAMU HARUS LOGIN TERLEBIH DAHULU !!',
 			});
 		}
 	},
