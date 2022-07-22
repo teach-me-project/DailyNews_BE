@@ -28,5 +28,6 @@ router.patch(
 	verifyAuth.VerifyAdminRole,
 	postController.updateallpoststatus
 );
+router.delete('/', verifyAuth.VerifyUpdatePost, postController.deletepost);
 
 module.exports = router;
