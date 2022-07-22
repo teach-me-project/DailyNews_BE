@@ -1,15 +1,16 @@
 const express = require("express")
 const authController = require('../controller/authController')
 const router = express.Router()
+const  jwt = require('jsonwebtoken');
 
 
-const getToken = async () => {
-    console.log(req.query.token, 'token hasil forgot')
-   
-} 
-router.get('/verify-email?token', getToken)
+router.get('/forgot-password')
+router.post('/forgot-password', authController.forgot )
+router.get('/reset-password/:id/:token',authController.getreset )
+router.post('/reset-password/:id/:token', authController.reset)
 router.post('/login',authController.login) 
 router.post('/register', authController.register)
-router.patch('/forgot-password/:email', authController.update)
+
+
 
 module.exports = router
