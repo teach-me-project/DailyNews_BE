@@ -52,7 +52,7 @@ const Auth = {
 	VerifyUpdatePost: (req, res, next) => {
 		if (req.headers.token) {
 			const token = req.headers.token;
-			const post_id = req.headers.post_id;
+			const { post_id } = req.query;
 			jwt.verify(
 				token,
 				process.env.JWT_SECRET_KEY,
@@ -71,8 +71,7 @@ const Auth = {
 									});
 								} else if (!result.length) {
 									return res.status(404).send({
-										message:
-											'PROFILE ID YANG TERKONEKSI DENGAN POST ID TERSEBUT TIDAK DITEMUKAN',
+										message: 'DATA TIDAK DITEMUKAN',
 									});
 								} else {
 									const profile_id = result[0].profile_id;

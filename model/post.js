@@ -282,4 +282,37 @@ module.exports = {
 			}
 		});
 	},
+	DeletePost: (req, res) => {
+		return new Promise((resolve, reject) => {
+			const { post_id } = req.query;
+			db.query(
+				`select * from post where post_id = ${post_id}`,
+				(err, result) => {
+					if (!result.length || err) {
+						reject({
+							message: `Postingan dengan  ID Postingan = ${post_id} Tidak Ditemukan `,
+						});
+					} else {
+						deletecover(`./upload/${result[0].post_cover}`);
+						db.query(
+							`delete from post where post_id = "${post_id}" `,
+							(err, result) => {
+								if (err) {
+									reject({
+										message: `Gagal Menghapus Postingan , ${err} `,
+									});
+								} else {
+									resolve({
+										message: `Postingan dengan  ID Postingan = ${post_id} Berhasil Dihapus`,
+										status: 200,
+										result,
+									});
+								}
+							}
+						);
+					}
+				}
+			);
+		});
+	},
 };
