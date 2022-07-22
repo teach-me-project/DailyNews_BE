@@ -132,7 +132,6 @@ module.exports = {
 		});
 	},
 
-<<<<<<< HEAD
 	forgot: (req,res) => {
 		return new Promise((resolve,reject) =>{
 			const {email} = req.body
