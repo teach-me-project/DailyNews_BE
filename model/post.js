@@ -176,7 +176,7 @@ module.exports = {
 	},
 	UpdatePostStatus: (req, res) => {
 		return new Promise((resolve, reject) => {
-			const { post_status } = req.body;
+			const { post_status } = req.query;
 			const { post_id } = req.query;
 			db.query(
 				`Select * from post where post_id = '${post_id}'`,
