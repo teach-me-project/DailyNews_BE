@@ -73,7 +73,7 @@ module.exports = {
 
 	register: (req, res) => {
 		return new Promise((resolve, reject) => {
-			const { email, password } = req.body;
+			const { email, password, phoneNumber } = req.body;
 			const sqlcheckemail = `SELECT account_email from account where account_email = '${email.toLowerCase()}'`;
 			db.query(sqlcheckemail, (err, result) => {
 				//Check Registered Email
@@ -104,7 +104,7 @@ module.exports = {
 									//INSERT DATA TO PROFILES TABLE
 									const lastid = result2.insertId;
 									db.query(
-										`insert into profiles (account_id) values("${lastid}")`,
+										`insert into profiles (account_id, profile_picture, profile_phone_number) values("${lastid}", "default-profile.png","${phoneNumber}")`,
 										(errinsertdata2, result3) => {
 											if (errinsertdata2) {
 												db.query(
@@ -148,7 +148,7 @@ module.exports = {
 				} else {
 					console.log(result[0].account_email);
 					const secret =
-						process.env.JWT_SECRET_KEY + result[0].account_password;
+						process.env.JWT_SECRET_KEY 
 					const payload = {
 						id: result[0].account_id,
 						email: result[0].account_email,
@@ -168,12 +168,10 @@ module.exports = {
 
 					const mailOptions = {
 						from: '"Verify your email" <zakiteachme12@gmail.com>',
-						to: '12kevinsanjaya@gmail.com',
+						to: `${result[0].account_email}`,
 						subject: 'dailynews -verify your email',
 						html: `<h2>${email}! Please Verify Mail for RESET PASSWORD</h2>
 							<h4>please verify your mail to continue...</h4>
-							
-	
 							<a href="http://localhost:3289/api/v1/auth/reset-password/${result[0].account_id}/token=${tokenEmail}">reset password</a>
 							`,
 					};
