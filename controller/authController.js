@@ -34,7 +34,7 @@ module.exports = {
             return res.status(500).send(error)
         }
     },
-
+    
     reset: async (req, res)=> {
         try {
       
