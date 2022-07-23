@@ -11,60 +11,67 @@ module.exports = {
 	addNewPost: (req, res) => {
 		return new Promise((resolve, reject) => {
 			const {
-				profile_id,
+				account_id,
 				post_cover,
 				post_title,
 				post_category,
 				post_fill,
 				post_link,
 			} = req.body;
-
-			if (req.file) {
-				if (FileValidation(req.file.filename) != 1) {
-					reject({
-						message:
-							'Format File Tidak Didukung ! , Format Yang Di Izinkan : Jpg,Png,Jpeg,Webp',
-						status: 400,
-					});
-				} else {
-					db.query(
-						`INSERT into post (profile_id,post_cover,post_title,post_category,post_fill,post_link) 
-				   Values ("${profile_id}","${req.file.filename}","${post_title}","${post_category}","${post_fill}","${post_link}")`,
-						(err, result) => {
-							const lastid = result.insertId;
-
-							if (err) {
-								console.log(err);
-								reject({
-									message: 'Data Artikel Tidak Berhasil Di Inputt',
-									status: 400,
-								});
-							} else {
-								db.query(
-									`insert into post_like (post_id) values("${lastid}")`,
-									(err2, result2) => {
-										if (err2) {
-											console.log(err2, 'ini errornya');
-										} else {
-											console.log(result2, 'ini resultnya');
-										}
-									}
-								);
-
-								resolve({
-									message:
-										'Artikel Berhasil Ditambahkan , Silahkan Menunggu Proses Persetujuan Admin',
-									status: 200,
-									result,
-								});
-							}
-						}
-					);
-				}
-			} else {
-				res.status(400).send({
-					message: 'Cover Artikel Tidak Boleh Kosong',
+			const { profile_id } = req.query;
+			if (profile_id != account_id) {
+				reject({
+					message:
+						'Data Profile_Id di Body Harus Sama dengan data Account_id di Params',
+					status: 400,
 				});
+			} else {
+				if (req.file) {
+					if (FileValidation(req.file.filename) != 1) {
+						reject({
+							message:
+								'Format File Tidak Didukung ! , Format Yang Di Izinkan : Jpg,Png,Jpeg,Webp',
+							status: 400,
+						});
+					} else {
+						db.query(
+							`INSERT into post (profile_id,post_cover,post_title,post_category,post_fill,post_link) 
+					   Values ("${account_id}","${req.file.filename}","${post_title}","${post_category}","${post_fill}","${post_link}")`,
+							(err, result) => {
+								const lastid = result.insertId;
+
+								if (err) {
+									reject({
+										message: 'Data Artikel Tidak Berhasil Di Inputt',
+										status: 400,
+									});
+								} else {
+									db.query(
+										`insert into post_like (post_id) values("${lastid}")`,
+										(err2, result2) => {
+											if (err2) {
+												console.log(err2, 'ini errornya');
+											} else {
+												console.log(result2, 'ini resultnya');
+											}
+										}
+									);
+
+									resolve({
+										message:
+											'Artikel Berhasil Ditambahkan , Silahkan Menunggu Proses Persetujuan Admin',
+										status: 200,
+										result,
+									});
+								}
+							}
+						);
+					}
+				} else {
+					res.status(400).send({
+						message: 'Cover Artikel Tidak Boleh Kosong',
+					});
+				}
 			}
 		});
 	},

@@ -4,6 +4,7 @@ const express = require('express');
 const postController = require('../controller/postController');
 const router = express.Router();
 const upload = require('../helper/multer');
+const { VerifyUser } = require('../helper/verifyAuth');
 const verifyAuth = require('../helper/verifyAuth');
 
 router.get('/accepted', postController.getallacceptedpost);
@@ -11,6 +12,7 @@ router.get('/waiting', postController.getallWaitingpost);
 router.post(
 	'/',
 	verifyAuth.VerifyToken,
+	verifyAuth.VerifyUser,
 	upload.single('post_cover'),
 	postController.addNewpost
 );
