@@ -206,7 +206,6 @@ module.exports = {
 
 				resolve({
 					token: token,
-					uye: 'uy',
 					data: results[0].account_id,
 				});
 			});

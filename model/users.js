@@ -1,5 +1,7 @@
 const db = require('../helper/db_connections')
 const fs = require('fs');
+const bcryp = require('bcrypt')
+const { resolve } = require('path');
 module.exports = {
          getUser : (req,res) =>{
             return new Promise((resolve, reject) =>{
@@ -120,6 +122,40 @@ module.exports = {
                         message: 'Get Success By Id Success',
                         status: 200,
                         data: results
+                    })
+                })
+            })
+        }, changePassword: (req,res) =>{
+            return new Promise((resolve,reject) =>{
+                const {id} = req.params
+                const {newAccountPassword, confirmPassword} = req.body
+                const sql = `SELECT account_password FROM account WHERE account_id = ${id}` 
+                db.query(sql, (err,result) =>{
+                    if(err){
+                        console.log(err)
+                    }
+                    
+                    if(newAccountPassword != confirmPassword){
+                        reject({
+                            message: 'password and confirm password are not the match'
+                        })
+                    }
+                    console.log(result)
+                    console.log(newAccountPassword)
+                    bcryp.hash(newAccountPassword,10,function(err,hashedPassword) {
+                        db.query(`UPDATE account SET account_password = '${hashedPassword}' WHERE account_id =${id}`, (err,results) =>{
+                            if(err){
+                                reject({
+                                    message: 'change password failed'
+                                })
+                            }
+                            resolve({
+                                message: 'change password success',
+                                status: 200,
+                                data: results
+                            })
+                        })
+
                     })
                 })
             })

@@ -1,5 +1,3 @@
-
-const users = require('../model/users');
 const Users = require('../model/users');
 
 module.exports = {
@@ -46,4 +44,12 @@ module.exports = {
 			res.status(400).send(error);
 		}
 	},
+	changePassword: async (req,res) =>{
+		try {
+			const result = await Users.changePassword(req, res);
+			res.status(200).send(result);
+		} catch (error) {
+			res.status(400).send(error);
+		}
+	}
 }
