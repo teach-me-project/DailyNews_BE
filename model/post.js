@@ -47,7 +47,7 @@ module.exports = {
 									});
 								} else {
 									db.query(
-										`insert into post_like (post_id) values("${lastid}")`,
+										`insert into post_statistic (post_id) values("${lastid}")`,
 										(err2, result2) => {
 											if (err2) {
 												console.log(err2, 'ini errornya');
@@ -81,7 +81,9 @@ module.exports = {
 			const { limit, page, order_by, sort } = req.query;
 			let offset = page * limit - limit;
 			db.query(
-				`SELECT * from post where post_status = 'accepted' ORDER BY ${order_by} ${sort} limit ${limit} OFFSET ${offset} `,
+				`SELECT post.post_id,post.profile_id, post.post_cover,post.post_title,post.post_category,post.post_fill, post_statistic.like_count,post_statistic.comment_count 
+				from post JOIN post_statistic on post.post_id = post_statistic.post_id
+				 where post_status = 'accepted' ORDER BY ${order_by} ${sort} limit ${limit} OFFSET ${offset} `,
 				(error, result) => {
 					db.query(
 						`SELECT * from post where post_status = 'accepted'`,
@@ -94,14 +96,24 @@ module.exports = {
 									status: 400,
 								});
 							} else {
-								resolve({
-									message: 'Get All Accepted Post Success',
-									status: 200,
-									totalpage: totalpage,
-									totalRow: result.length,
-									totaldata: result2.length,
-									list: result,
-								});
+								db.query(
+									`select post_comment.post_id, post_comment.profile_id, profiles.profile_name,post_comment.comment_message from post_comment INNER JOIN profiles On post_comment.profile_id = profiles.profile_id `,
+									(errcomment, resultcomment) => {
+										console.log(resultcomment, 'Ini result Commentnya');
+
+										resolve({
+											message: 'Get All Accepted Post Success',
+											status: 200,
+											totalpage: totalpage,
+											totalRow: result.length,
+											totaldata: result2.length,
+											list: {
+												post: result,
+												comment: resultcomment,
+											},
+										});
+									}
+								);
 							}
 						}
 					);

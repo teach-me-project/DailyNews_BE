@@ -2,88 +2,30 @@
 
 const db = require('../helper/db_connections');
 module.exports = {
-	addCommentPost: (req, res) => {
+	getCommentPost: (req, res) => {
 		return new Promise((resolve, reject) => {
-			const { comment_message, account_id } = req.body;
-			const { post_id, profile_id } = req.query;
-			if (account_id != profile_id) {
-				reject({
-					message:
-						'Data Profile_Id di Body Harus Sama dengan data Account_id di Params',
-					status: 400,
-				});
-			} else {
-				db.query(
-					`Select post_id from post where post_id = '${post_id}' `,
-					(errsearchpost, result) => {
-						if (errsearchpost) {
-							reject({
-								message: 'Error Di DB Query',
-							});
-						} else if (!result.length) {
-							reject({
-								message: `Post Dengan ID = ${post_id} Tidak Ditemukan `,
-							});
-						} else {
-							db.query(
-								`INSERT into post_comment (post_id,profile_id,comment_message) 
-							Values ("${post_id}","${profile_id}","${comment_message}")`,
-								(errdeletecomment, resultcomment) => {
-									if (errdeletecomment || !resultcomment) {
-										reject({
-											message: ' Gagal Menambahkan Komentar',
-										});
-									} else {
-										db.query(
-											`Select comment_count from post_like where post_id = '${post_id}'`,
-											(errsearchpost, resultsearchpost) => {
-												if (errsearchpost || !resultsearchpost.length) {
-													reject({
-														message: ' Gagal Ketika Mencari Postingan',
-													});
-												} else {
-													const JumlahKomentarTerakhir =
-														resultsearchpost[0].comment_count;
-													db.query(
-														`UPDATE post_like SET comment_count='${
-															JumlahKomentarTerakhir + 1
-														}' where post_id = '${post_id}'`,
-														(erraddcommentcount, resultaddcommentcount) => {
-															if (
-																erraddcommentcount ||
-																!resultaddcommentcount
-															) {
-																reject({
-																	message:
-																		' Gagal Ketika Menambahkan Jumlah Data Komentar',
-																});
-															} else {
-																resolve({
-																	message: 'Berhasil Menambahkan Komentar !',
-																	PostID: post_id,
-																	Komentar: comment_message,
-																	JumlahKomentar: JumlahKomentarTerakhir + 1,
-																	resultcomment,
-																});
-															}
-														}
-													);
-												}
-											}
-										);
-									}
-								}
-							);
-						}
+			const { post_id } = req.query;
+			db.query(
+				`select post_comment.post_id, post_comment.profile_id, profiles.profile_name,post_comment.comment_message from post_comment INNER JOIN profiles On post_comment.profile_id = profiles.profile_id where post_id = '${post_id}'`,
+				(errcomment, resultcomment) => {
+					if (errcomment) {
+						reject({
+							message: `Error Pada Proses Mencari Komentar`,
+						});
 					}
-				);
-			}
+					resolve({
+						message: `Get Comment On Post with ID = ${post_id}`,
+						status: 200,
+						Comment: resultcomment,
+					});
+				}
+			);
 		});
 	},
-	deleteCommentPost: (req, res) => {
+	addCommentPost: (req, res) => {
 		return new Promise((resolve, reject) => {
-			const { post_id, comment_id } = req.query;
-
+			const { comment_message } = req.body;
+			const { post_id, profile_id } = req.query;
 			db.query(
 				`Select post_id from post where post_id = '${post_id}' `,
 				(errsearchpost, result) => {
@@ -97,59 +39,106 @@ module.exports = {
 						});
 					} else {
 						db.query(
-							`Select comment_id from post_comment where comment_id = '${comment_id}' `,
-							(errsearchComment, resultsearchcomment) => {
-								if (errsearchComment) {
+							`INSERT into post_comment (post_id,profile_id,comment_message) 
+							Values ("${post_id}","${profile_id}","${comment_message}")`,
+							(errdeletecomment, resultcomment) => {
+								if (errdeletecomment || !resultcomment) {
 									reject({
-										message: 'Error Di DB Query Search Comment',
-									});
-								} else if (!resultsearchcomment.length) {
-									reject({
-										message: `Komentar Dengan Komentar ID = ${comment_id} Tidak Ditemukan `,
+										message: ' Gagal Menambahkan Komentar',
 									});
 								} else {
 									db.query(
-										`delete from post_comment where comment_id = '${comment_id}'`,
-										(errdeletecomment, resultdeletecomment) => {
-											if (errdeletecomment || !resultdeletecomment) {
+										`Select comment_count from post_statistic where post_id = '${post_id}'`,
+										(errsearchpost, resultsearchpost) => {
+											if (errsearchpost || !resultsearchpost.length) {
 												reject({
-													message: ' Gagal Menghapus Komentar',
+													message: ' Gagal Ketika Mencari Postingan',
 												});
 											} else {
+												const JumlahKomentarTerakhir =
+													resultsearchpost[0].comment_count;
 												db.query(
-													`Select comment_count from post_like where post_id = '${post_id}'`,
-													(errsearchpost, resultsearchpost) => {
-														if (errsearchpost || !resultsearchpost.length) {
+													`UPDATE post_statistic SET comment_count='${
+														JumlahKomentarTerakhir + 1
+													}' where post_id = '${post_id}'`,
+													(erraddcommentcount, resultaddcommentcount) => {
+														if (erraddcommentcount || !resultaddcommentcount) {
 															reject({
-																message: ' Gagal Ketika Mencari Postingan',
+																message:
+																	' Gagal Ketika Menambahkan Jumlah Data Komentar',
 															});
 														} else {
-															const JumlahKomentarTerakhir =
-																resultsearchpost[0].comment_count;
-															db.query(
-																`UPDATE post_like SET comment_count='${
-																	JumlahKomentarTerakhir - 1
-																}' where post_id = '${post_id}'`,
-																(erraddcommentcount, resultaddcommentcount) => {
-																	if (
-																		erraddcommentcount ||
-																		!resultaddcommentcount
-																	) {
-																		reject({
-																			message:
-																				' Gagal Ketika Menambahkan Jumlah Data Komentar',
-																		});
-																	} else {
-																		resolve({
-																			message: 'Berhasil Menghapus !',
-																			PostID: post_id,
-																			JumlahKomentar:
-																				JumlahKomentarTerakhir - 1,
-																			resultdeletecomment,
-																		});
-																	}
-																}
-															);
+															resolve({
+																message: 'Berhasil Menambahkan Komentar !',
+																PostID: post_id,
+																Komentar: comment_message,
+																JumlahKomentar: JumlahKomentarTerakhir + 1,
+																resultcomment,
+															});
+														}
+													}
+												);
+											}
+										}
+									);
+								}
+							}
+						);
+					}
+				}
+			);
+		});
+	},
+	deleteCommentPost: (req, res) => {
+		return new Promise((resolve, reject) => {
+			const { post_id, comment_id } = req.query;
+			db.query(
+				`Select comment_id from post_comment where comment_id = '${comment_id}' AND post_id = '${post_id}'`,
+				(errsearchComment, resultsearchcomment) => {
+					if (errsearchComment) {
+						reject({
+							message: 'Error Di DB Query Search Comment',
+						});
+					} else if (!resultsearchcomment.length) {
+						reject({
+							message: `Komentar Dengan Komentar ID = ${comment_id} pada Post dengan post ID = ${post_id}Tidak Ditemukan `,
+						});
+					} else {
+						db.query(
+							`delete from post_comment where comment_id = '${comment_id}'`,
+							(errdeletecomment, resultdeletecomment) => {
+								if (errdeletecomment || !resultdeletecomment) {
+									reject({
+										message: ' Gagal Menghapus Komentar',
+									});
+								} else {
+									db.query(
+										`Select comment_count from post_statistic where post_id = '${post_id}'`,
+										(errsearchpost, resultsearchpost) => {
+											if (errsearchpost || !resultsearchpost.length) {
+												reject({
+													message: ' Gagal Ketika Mencari Postingan',
+												});
+											} else {
+												const JumlahKomentarTerakhir =
+													resultsearchpost[0].comment_count;
+												db.query(
+													`UPDATE post_statistic SET comment_count='${
+														JumlahKomentarTerakhir - 1
+													}' where post_id = '${post_id}'`,
+													(erraddcommentcount, resultaddcommentcount) => {
+														if (erraddcommentcount || !resultaddcommentcount) {
+															reject({
+																message:
+																	' Gagal Ketika Menambahkan Jumlah Data Komentar',
+															});
+														} else {
+															resolve({
+																message: 'Berhasil Menghapus !',
+																PostID: post_id,
+																JumlahKomentar: JumlahKomentarTerakhir - 1,
+																resultdeletecomment,
+															});
 														}
 													}
 												);
