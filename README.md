@@ -12,9 +12,6 @@
 # About :
   
 ---
-## Contributors
-
-This project exists thanks to [all the people who contribute](https://github.com/orgs/teach-me-project/people).
 
   [![Netlify Status](https://api.netlify.com/api/v1/badges/29e58c63-9c4b-45a9-af9e-e827896feb5d/deploy-status)](https://app.netlify.com/sites/ankasa-rainbow/deploys)
 ## Getting Started
@@ -34,7 +31,7 @@ This project exists thanks to [all the people who contribute](https://github.com
 
   
 
-1. Clone this repos (ankasa-frontend)
+1. Clone this repos (DailyNews)
 
 ```sh
 git clone https://github.com/teach-me-project/DailyNews_BE
@@ -68,7 +65,7 @@ npm start / nodemon
 
   
 # Features Application
-- [x] Login ,Register, forgot account.
+- [x] Auth.
 - [x] Comment.
 - [x] Like.
 - [x] Profile.
@@ -101,11 +98,11 @@ npm start / nodemon
 # Our Team - Teach_Me!
  | profile | Name | Stack | Github | Linkedin |
  | ------- | ---- | ------ | ------ | -------- |
- | ![profile Dzakia][img-Dzakia] | Annisa Dzakia Ramadhina | Fullstack | [Dzakia](https://github.com/dzakia-st3)|[Dzakia](https://www.linkedin.com/in/vigarp/) 
- | ![profile Sandi][img-Sandi] | Muhammad Sandi Maulana Y| Backend| [Sandi](https://github.com/muhammadsandi12)|[Sandi](https://www.linkedin.com/in/adindacahyaferina) 
- | ![profile Vickri][img-Vickri] | Vickri Fahrurozi | Backend | [Vickri](https://github.com/VickriFahrurozi)|[Vickri](https://linkedin.com/in/tyassusanto/) 
- | ![profile Ade][img-Ade] | Ade Ryzki Aprinata | Frontend | [Ade Ryzki](https://github.com/ade-ryzki)|[Ade Ryzki](https://www.linkedin.com/in/ade-ryzki)
-  | ![profile Nahrowi][img-Nahrowi] | Muhammad Nahrowi | Frontend | [Nahrowi](https://github.com/m-nahrowi)|[Nahrowi](https://www.linkedin.com/in/ridhosuhendar)
+ | ![profile Dzakia][img-Dzakia] | Annisa Dzakia Ramadhina | Fullstack | [Dzakia](https://github.com/dzakia-st3)|[Dzakia](https://www.linkedin.com/) 
+ | ![profile Sandi][img-Sandi] | Muhammad Sandi Maulana Y| Backend| [Sandi](https://github.com/muhammadsandi12)|[Sandi](https://www.linkedin.com/) 
+ | ![profile Vickri][img-Vickri] | Vickri Fahrurozi | Backend | [Vickri](https://github.com/VickriFahrurozi)|[Vickri](https://www.linkedin.com/in/vickri-fahrurozi) 
+ | ![profile Ade][img-Ade] | Ade Ryzki Aprinata | Frontend | [Ade](https://github.com/ade-ryzki)|[Ade](https://www.linkedin.com/in/ade-ryzki)
+ | ![profile Nahrowi][img-Nahrowi] | Muhammad Nahrowi | Frontend | [Nahrowi](https://github.com/m-nahrowi)|[Nahrowi](https://www.linkedin.com/)
 
 [img-Dzakia]: https://avatars.githubusercontent.com/u/105700671?v=4
 [img-Sandi]: https://avatars.githubusercontent.com/u/69453646?v=4
