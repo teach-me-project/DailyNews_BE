@@ -68,13 +68,41 @@ module.exports = {
 																	' Gagal Ketika Menambahkan Jumlah Data Komentar',
 															});
 														} else {
-															resolve({
-																message: 'Berhasil Menambahkan Komentar !',
-																PostID: post_id,
-																Komentar: comment_message,
-																JumlahKomentar: JumlahKomentarTerakhir + 1,
-																resultcomment,
-															});
+															let target_profile_id;
+															db.query(
+																`Select profile_id from post where post_id = ${post_id} `,
+																(
+																	errsearchpostprofileid,
+																	resultsearchpostprofileid
+																) => {
+																	target_profile_id =
+																		resultsearchpostprofileid[0].profile_id;
+
+																	db.query(
+																		`INSERT into notification (target_profile_id,from_profile_id,notification_message) 
+																		Values ("${target_profile_id}","${profile_id}",'Commented On Your Post')`,
+																		(erraddnotif, resultnotif) => {
+																			if (erraddnotif) {
+																				reject({
+																					message:
+																						' Gagal Ketika Menambahkan Notifikasi',
+																				});
+																			} else if (resultnotif) {
+																				resolve({
+																					message:
+																						'Berhasil Menambahkan Komentar !',
+																					PostID: post_id,
+																					Komentar: comment_message,
+																					JumlahKomentar:
+																						JumlahKomentarTerakhir + 1,
+																					resultcomment,
+																					resultnotifComment: resultnotif,
+																				});
+																			}
+																		}
+																	);
+																}
+															);
 														}
 													}
 												);

@@ -206,7 +206,7 @@ module.exports = {
 			const { post_status } = req.query;
 			const { post_id } = req.query;
 			db.query(
-				`Select * from post where post_id = '${post_id}'`,
+				`Select profile_id from post where post_id = '${post_id}'`,
 				(err, result) => {
 					if (err) {
 						reject({
@@ -219,27 +219,49 @@ module.exports = {
 							status: 400,
 						});
 					} else {
+						let target_profile_id = result[0].profile_id;
+
 						db.query(
 							`UPDATE post SET post_status='${post_status}' where post_id = '${post_id}'`,
-							(err, result) => {
+							(err, resultupdate) => {
 								if (err) {
 									reject({
 										message: 'Gagal Mengubah Status Artikel',
 										status: 400,
 									});
-								} else if (result && post_status.toLowerCase() == 'declined') {
-									resolve({
-										message: 'Artikel Telah DiTolak Untuk Di Publikasikan !! ',
-										status: 200,
-										result,
-									});
 								} else {
-									resolve({
-										message:
-											'Artikel Telah Di Setujui untuk di publikasikan !! ',
-										status: 200,
-										result,
-									});
+									db.query(
+										`INSERT into notification (target_profile_id,from_profile_id,notification_message) 
+									Values ("${target_profile_id}",1,'Admin Has Been ${post_status} Your Post')`,
+										(erraddnotif, resultnotif) => {
+											if (erraddnotif) {
+												reject({
+													message: `Gagal Ketika Menambahkan Notifikasi ${erraddnotif}`,
+												});
+											} else if (resultnotif) {
+												if (
+													resultupdate &&
+													post_status.toLowerCase() == 'declined'
+												) {
+													resolve({
+														message:
+															'Artikel Telah DiTolak Untuk Di Publikasikan !! ',
+														status: 200,
+														resultupdate,
+														resultnotif,
+													});
+												} else {
+													resolve({
+														message:
+															'Artikel Telah Di Setujui untuk di publikasikan !! ',
+														status: 200,
+														resultupdate,
+														resultnotif,
+													});
+												}
+											}
+										}
+									);
 								}
 							}
 						);
@@ -251,6 +273,7 @@ module.exports = {
 	UpdateAllPostStatus: (req, res) => {
 		return new Promise((resolve, reject) => {
 			const { post_status } = req.query;
+			let profile_result = [];
 			if (
 				post_status.toLowerCase() == 'accepted' ||
 				post_status.toLowerCase() == 'declined'
@@ -269,6 +292,9 @@ module.exports = {
 								status: 400,
 							});
 						} else {
+							for (let i = 0; i < result.length; i++) {
+								profile_result[i] = result[i].profile_id;
+							}
 							db.query(
 								`UPDATE post SET post_status='${post_status}' where post_status = 'waiting' `,
 								(err, result) => {
@@ -277,24 +303,39 @@ module.exports = {
 											message: 'Gagal Mengubah Status waiting Artikel',
 											status: 400,
 										});
-									} else if (
-										result &&
-										post_status.toLowerCase() == 'declined'
-									) {
-										resolve({
-											message: `Status Semua Artikel waiting dirubah menjadi ${post_status} `,
-											status: 200,
-											result,
-										});
-									} else if (
-										result &&
-										post_status.toLowerCase() == 'accepted'
-									) {
-										resolve({
-											message: `Status Semua Artikel waiting dirubah menjadi ${post_status} `,
-											status: 200,
-											result,
-										});
+									} else if (result) {
+										for (let i = 0; i < profile_result.length; i++) {
+											db.query(
+												`INSERT into notification (target_profile_id,from_profile_id,notification_message) 
+											Values ("${profile_result[i]}",1,'Admin Has Been ${post_status} Your Post')`,
+												(erraddnotif, resultnotif) => {
+													if (erraddnotif && i == profile_result.length - 1) {
+														reject({
+															message: `Gagal Ketika Menambahkan Notifikasi ${erraddnotif}`,
+														});
+													} else if (
+														resultnotif &&
+														i == profile_result.length - 1
+													) {
+														if (post_status.toLowerCase() == 'declined') {
+															resolve({
+																message: `Status Semua Artikel waiting dirubah menjadi ${post_status} `,
+																status: 200,
+																result,
+															});
+														} else if (
+															post_status.toLowerCase() == 'accepted'
+														) {
+															resolve({
+																message: `Status Semua Artikel waiting dirubah menjadi ${post_status} `,
+																status: 200,
+																result,
+															});
+														}
+													}
+												}
+											);
+										}
 									}
 								}
 							);
