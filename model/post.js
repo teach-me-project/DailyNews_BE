@@ -393,6 +393,7 @@ module.exports = {
 				from post JOIN post_statistic on post.post_id = post_statistic.post_id
 				 where post_status = 'accepted' AND post.post_id='${post_id}' `,
 				(error, result) => {
+					console.log(result[0], 'ini resultnya');
 					db.query(
 						`SELECT * from post where post_status = 'accepted' AND  ${post_id}`,
 						(error2, result2) => {
@@ -405,16 +406,20 @@ module.exports = {
 								db.query(
 									`select post_comment.post_id, post_comment.profile_id, profiles.profile_name,post_comment.comment_message from post_comment INNER JOIN profiles On post_comment.profile_id = profiles.profile_id WHERE post_comment.post_id='${post_id}'`,
 									(errcomment, resultcomment) => {
-										console.log(resultcomment, 'Ini result Commentnya');
-
-										resolve({
-											message: 'Get Post By ID Success',
-											status: 200,
-											list: {
-												post: result,
-												comment: resultcomment,
-											},
-										});
+										db.query(
+											`Select profile_name from profiles where profile_id = '${result[0].profile_id}'`,
+											(errsearchname, resultprofile) => {
+												resolve({
+													message: 'Get Post By ID Success',
+													status: 200,
+													list: {
+														author: resultprofile,
+														post: result,
+														comment: resultcomment,
+													},
+												});
+											}
+										);
 									}
 								);
 							}
