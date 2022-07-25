@@ -389,10 +389,10 @@ module.exports = {
 			const { post_id } = req.query;
 
 			db.query(
-				`SELECT post.post_id,post.profile_id, post.post_cover,post.post_title,post.post_category,post.post_fill, post_statistic.like_count,post_statistic.comment_count 
-				from post JOIN post_statistic on post.post_id = post_statistic.post_id
+				`SELECT post.post_id,post.profile_id, post.post_cover,post.post_title,post.post_category,post.post_fill, post_statistic.like_count,post_statistic.comment_count from post JOIN post_statistic on post.post_id = post_statistic.post_id
 				 where post_status = 'accepted' AND post.post_id='${post_id}' `,
 				(error, result) => {
+					console.log(result,'ini hasil result')
 					db.query(
 						`SELECT * from post where post_status = 'accepted' AND  ${post_id}`,
 						(error2, result2) => {

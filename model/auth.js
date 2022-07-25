@@ -35,7 +35,6 @@ module.exports = {
 											message: 'Ada Masalah Saat Login, Harap coba lagi.',
 										});
 									}
-									console.log(result);
 									if (result) {
 										const token = jwt.sign(
 											{
