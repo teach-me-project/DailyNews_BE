@@ -9,6 +9,7 @@ const verifyAuth = require('../helper/verifyAuth');
 
 router.get('/accepted', postController.getallacceptedpost);
 router.get('/waiting', postController.getallWaitingpost);
+router.get('/id', postController.getpostbyid);
 router.post(
 	'/',
 	verifyAuth.VerifyToken,

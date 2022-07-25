@@ -12,6 +12,15 @@ module.exports = {
 			res.status(400).send(error);
 		}
 	},
+	getpostbyid: async (req, res) => {
+		//add New post From Body
+		try {
+			const result = await Post.getPostByID(req, res);
+			res.status(200).send(result);
+		} catch (error) {
+			res.status(400).send(error);
+		}
+	},
 	getallWaitingpost: async (req, res) => {
 		//add New post From Body
 		try {

@@ -383,4 +383,45 @@ module.exports = {
 			);
 		});
 	},
+	getPostByID: (req, res) => {
+		//get All Movies With Join
+		return new Promise((resolve, reject) => {
+			const { post_id } = req.query;
+
+			db.query(
+				`SELECT post.post_id,post.profile_id, post.post_cover,post.post_title,post.post_category,post.post_fill, post_statistic.like_count,post_statistic.comment_count 
+				from post JOIN post_statistic on post.post_id = post_statistic.post_id
+				 where post_status = 'accepted' AND post.post_id='${post_id}' `,
+				(error, result) => {
+					db.query(
+						`SELECT * from post where post_status = 'accepted' AND  ${post_id}`,
+						(error2, result2) => {
+							if (error || error2) {
+								reject({
+									message: `Failed To Get All Accepted Post,${error2} ${error}`,
+									status: 400,
+								});
+							} else {
+								db.query(
+									`select post_comment.post_id, post_comment.profile_id, profiles.profile_name,post_comment.comment_message from post_comment INNER JOIN profiles On post_comment.profile_id = profiles.profile_id WHERE post_comment.post_id='${post_id}'`,
+									(errcomment, resultcomment) => {
+										console.log(resultcomment, 'Ini result Commentnya');
+
+										resolve({
+											message: 'Get Post By ID Success',
+											status: 200,
+											list: {
+												post: result,
+												comment: resultcomment,
+											},
+										});
+									}
+								);
+							}
+						}
+					);
+				}
+			);
+		});
+	},
 };
