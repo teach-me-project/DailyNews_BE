@@ -13,7 +13,7 @@
   
 ---
 
-  [![Netlify Status](https://api.netlify.com/api/v1/badges/29e58c63-9c4b-45a9-af9e-e827896feb5d/deploy-status)](https://app.netlify.com/sites/ankasa-rainbow/deploys)
+  [![Netlify Status](https://api.netlify.com/api/v1/badges/29e58c63-9c4b-45a9-af9e-e827896feb5d/deploy-status)]()
 ## Getting Started
 
   
