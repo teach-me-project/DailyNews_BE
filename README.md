@@ -74,25 +74,6 @@ npm start / nodemon
 - [x] Bookmark.
 ## Screenshots
 
-  
-
-<div  align="center">
-
-<img  width="350"  src="https://raw.githubusercontent.com/Rainbow-io/ankasa-frontend/dev/src/assets/ss/ankasa-loginpage.png">
-
-<img  width="350"  src="https://raw.githubusercontent.com/Rainbow-io/ankasa-frontend/dev/src/assets/ss/ankasa-explore.png">
-
-</div>
-
-<div  align="center">
-
-<img  width="350"  src="https://raw.githubusercontent.com/Rainbow-io/ankasa-frontend/dev/src/assets/ss/ankasa-findticket.png">
-
-<img  width="350"  src="https://raw.githubusercontent.com/Rainbow-io/ankasa-frontend/dev/src/assets/ss/ankasa-mybooking.png">
-
-</div>
-
-  
 
 
 # Our Team - Teach_Me!
