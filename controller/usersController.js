@@ -19,7 +19,7 @@ module.exports = {
 		   }else{
 				reqModifer = {
 				   ...req,
-				   body:{ ...req.body}
+				   body:{ ...req.body, profile_picture: 'default-profile.png'}
 			   }
 		   }
 			const result = await Users.update(reqModifer, res);
