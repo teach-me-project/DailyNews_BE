@@ -13,7 +13,7 @@
   
 ---
 
-  [![Netlify Status](https://api.netlify.com/api/v1/badges/29e58c63-9c4b-45a9-af9e-e827896feb5d/deploy-status)](https://app.netlify.com/sites/ankasa-rainbow/deploys)
+  [![Netlify Status](https://api.netlify.com/api/v1/badges/29e58c63-9c4b-45a9-af9e-e827896feb5d/deploy-status)]()
 ## Getting Started
 
   
@@ -75,24 +75,8 @@ npm start / nodemon
 ## Screenshots
 
   
-
 <div  align="center">
-
-<img  width="350"  src="https://raw.githubusercontent.com/Rainbow-io/ankasa-frontend/dev/src/assets/ss/ankasa-loginpage.png">
-
-<img  width="350"  src="https://raw.githubusercontent.com/Rainbow-io/ankasa-frontend/dev/src/assets/ss/ankasa-explore.png">
-
-</div>
-
-<div  align="center">
-
-<img  width="350"  src="https://raw.githubusercontent.com/Rainbow-io/ankasa-frontend/dev/src/assets/ss/ankasa-findticket.png">
-
-<img  width="350"  src="https://raw.githubusercontent.com/Rainbow-io/ankasa-frontend/dev/src/assets/ss/ankasa-mybooking.png">
-
-</div>
-
-  
+<img  width="350"  src="https://github.com/teach-me-project/DailyNews_BE/blob/main/WhatsApp%20Image%202022-07-26%20at%2010.45.26.jpeg">
 
 
 # Our Team - Teach_Me!

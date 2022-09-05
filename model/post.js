@@ -103,11 +103,13 @@ module.exports = {
 										resolve({
 											message: 'Get All Accepted Post Success',
 											status: 200,
-											totalpage: totalpage,
 											totalRow: result.length,
 											totaldata: result2.length,
 											list: {
-												post: result,
+												post: {
+													result,
+													totalpage: totalpage,
+												},
 												comment: resultcomment,
 											},
 										});
