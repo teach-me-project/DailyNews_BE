@@ -81,7 +81,7 @@ module.exports = {
 			const { limit, page, order_by, sort, search } = req.query;
 			let offset = page * limit - limit;
 			db.query(`SELECT post.post_id,post.profile_id, post.post_cover,post.post_title,post.post_category,post.post_fill, post_statistic.like_count,post_statistic.comment_count, post.created_at 
-				from post JOIN post_statistic on post.post_id = post_statistic.post_id ${search ? `where post.post_title like search AND post_status = 'accepted' `:`where post_status = 'accepted' `} 
+				from post JOIN post_statistic on post.post_id = post_statistic.post_id ${search ? `where post.post_title like '%${search}%' AND post_status = 'accepted' `:`where post_status = 'accepted' `} 
 				ORDER BY ${order_by} ${sort} limit ${limit} OFFSET ${offset} `,
 				(error, result) => {
 					db.query(
@@ -221,7 +221,6 @@ module.exports = {
 						});
 					} else {
 						let target_profile_id = result[0].profile_id;
-
 						db.query(
 							`UPDATE post SET post_status='${post_status}' where post_id = '${post_id}'`,
 							(err, resultupdate) => {
