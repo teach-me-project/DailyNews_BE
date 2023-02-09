@@ -9,11 +9,11 @@
   
 ---
 <div align="center">
-# About :
+# Link Deploy :
   
 ---
-
-  [![Netlify Status](https://api.netlify.com/api/v1/badges/29e58c63-9c4b-45a9-af9e-e827896feb5d/deploy-status)]()
+  Vercel: <a>https://daily-news-api.vercel.app/<a/>
+  
 ## Getting Started
 
   
