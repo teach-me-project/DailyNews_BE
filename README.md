@@ -9,7 +9,7 @@
   
 ---
 <div align="center">
-# [Link Deploy :](https://daily-news-api.vercel.app/)
+# Link Deploy : https://daily-news-api.vercel.app/
   
 ## Getting Started
 
