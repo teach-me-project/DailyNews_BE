@@ -10,8 +10,6 @@
 ---
 <div align="center">
 # Link Deploy :
-  
----
   Vercel: <a>https://daily-news-api.vercel.app/<a/>
   
 ## Getting Started
